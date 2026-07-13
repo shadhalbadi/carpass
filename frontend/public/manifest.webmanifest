@@ -1,0 +1,10 @@
+{
+  "name": "CarPass Oman",
+  "short_name": "CarPass",
+  "description": "Car import landed cost + tracking for Oman",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f6f8",
+  "theme_color": "#0d9488",
+  "lang": "en"
+}

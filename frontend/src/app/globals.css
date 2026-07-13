@@ -1,0 +1,136 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --bg: #f4f6f8;
+  --bg-elevated: #ffffff;
+  --ink: #0f172a;
+  --ink-muted: #64748b;
+  --ink-faint: #94a3b8;
+  --line: #e2e8f0;
+  --line-strong: #cbd5e1;
+  --accent: #0d9488;
+  --accent-strong: #0f766e;
+  --accent-soft: #ccfbf1;
+  --danger: #e11d48;
+  --warn: #d97706;
+  --radius: 14px;
+  --shadow: 0 1px 2px rgb(15 23 42 / 4%), 0 8px 24px rgb(15 23 42 / 4%);
+}
+
+body {
+  font-family: Manrope, "IBM Plex Sans Arabic", system-ui, sans-serif;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, #e6fffa 0%, transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, #eff6ff 0%, transparent 50%),
+    var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+[dir="rtl"] body {
+  font-family: "IBM Plex Sans Arabic", Manrope, system-ui, sans-serif;
+}
+
+.page-title {
+  @apply text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl;
+}
+
+.page-sub {
+  @apply mt-1.5 max-w-2xl text-sm leading-relaxed text-slate-500 sm:text-base;
+}
+
+.card {
+  border: 1px solid var(--line);
+  background: var(--bg-elevated);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+}
+
+.btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50;
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--accent-strong);
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition disabled:opacity-50;
+  border-color: var(--line-strong);
+  background: #fff;
+  color: var(--ink);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.btn-ghost {
+  @apply inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900;
+}
+
+.input {
+  @apply w-full rounded-xl border bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 disabled:bg-slate-50 disabled:text-slate-400;
+  border-color: var(--line-strong);
+}
+
+.input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgb(13 148 136 / 15%);
+}
+
+.label {
+  @apply mb-1.5 block text-sm font-medium text-slate-600;
+}
+
+.badge {
+  @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide;
+}
+
+.badge-muted {
+  @apply badge bg-slate-100 text-slate-600;
+}
+
+.badge-accent {
+  @apply badge;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.link {
+  @apply font-medium text-teal-700 transition hover:text-teal-900;
+}
+
+.muted {
+  @apply text-slate-500;
+}
+
+.danger-text {
+  color: var(--danger);
+}
+
+.search-spinner {
+  @apply inline-block h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white;
+}
+
+.search-spinner-lg {
+  @apply h-6 w-6 border-2 border-teal-200 border-t-teal-600;
+}
+
+.skeleton {
+  @apply animate-pulse rounded-lg bg-slate-200;
+}
+
+.surface-inset {
+  @apply rounded-xl border border-slate-200 bg-slate-50;
+}

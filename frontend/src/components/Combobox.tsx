@@ -124,7 +124,7 @@ export function Combobox({
                 role="option"
                 aria-selected={value === opt}
                 className={`block w-full px-3 py-2 text-left text-sm ${
-                  i === highlight ? "bg-teal-50 text-teal-900" : "text-slate-700 hover:bg-slate-50"
+                  i === highlight ? "bg-blue-50 text-blue-900" : "text-slate-700 hover:bg-slate-50"
                 }`}
                 onMouseEnter={() => setHighlight(i)}
                 onClick={() => pick(opt)}

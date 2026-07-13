@@ -75,7 +75,7 @@ function TrackInner() {
               <h2 className="text-xl font-semibold text-slate-900">
                 {shipment.year} {shipment.make} {shipment.model}
               </h2>
-              <p className="mt-1 font-mono text-sm font-semibold text-teal-700">{shipment.tracking_code}</p>
+              <p className="mt-1 font-mono text-sm font-semibold text-blue-700">{shipment.tracking_code}</p>
             </div>
             <dl className="grid grid-cols-2 gap-4 text-sm">
               <div>
@@ -103,7 +103,7 @@ function TrackInner() {
                   key={step}
                   className={`rounded-xl border px-3 py-2.5 text-sm ${
                     idx <= currentIdx
-                      ? "border-teal-200 bg-teal-50 text-teal-900"
+                      ? "border-blue-200 bg-blue-50 text-blue-900"
                       : "border-slate-200 text-slate-400"
                   }`}
                 >
@@ -118,7 +118,7 @@ function TrackInner() {
               <>
                 <div className="relative h-72 overflow-hidden rounded-xl border border-slate-200 bg-[radial-gradient(circle_at_center,#ccfbf188,transparent_55%),linear-gradient(#f8fafc,#e2e8f0)]">
                   <div
-                    className="absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-teal-600 shadow-md"
+                    className="absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-600 shadow-md"
                     style={{
                       left: `${((shipment.vessel_lon + 180) / 360) * 100}%`,
                       top: `${((90 - shipment.vessel_lat) / 180) * 100}%`,
@@ -145,7 +145,7 @@ function TrackInner() {
             {shipment.completeness && (
               <div className="surface-inset p-3 text-sm">
                 <p className="font-medium text-slate-800">Document readiness</p>
-                <p className={shipment.completeness.is_ready_for_customs ? "text-teal-700" : "text-amber-700"}>
+                <p className={shipment.completeness.is_ready_for_customs ? "text-blue-700" : "text-amber-700"}>
                   {shipment.completeness.is_ready_for_customs ? "Ready for customs" : "Missing documents"}
                 </p>
                 {shipment.completeness.missing?.length > 0 && (

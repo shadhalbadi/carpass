@@ -183,7 +183,7 @@ function ShipmentsInner() {
       {error && <p className="danger-text text-sm">{error}</p>}
 
       {pickerOpen && (
-        <section className="card space-y-4 border-teal-300 ring-2 ring-teal-100">
+        <section className="card space-y-4 border-blue-300 ring-2 ring-blue-100">
           <div className="flex items-center justify-between gap-3">
             <div>
               <h2 className="text-lg font-semibold text-slate-900">Pick a car</h2>
@@ -201,7 +201,7 @@ function ShipmentsInner() {
                 key={item.id}
                 type="button"
                 onClick={() => pickCar(item)}
-                className="card w-full text-left transition hover:border-teal-400 hover:ring-2 hover:ring-teal-100"
+                className="card w-full text-left transition hover:border-blue-400 hover:ring-2 hover:ring-blue-100"
               >
                 <div className="flex items-start justify-between gap-2">
                   <span className="font-semibold text-slate-900">
@@ -220,7 +220,7 @@ function ShipmentsInner() {
       )}
 
       {pickedCar && (
-        <p className="text-sm font-medium text-teal-700">
+        <p className="text-sm font-medium text-blue-700">
           Importing: {pickedCar.year} {pickedCar.make} {pickedCar.model} — details filled in below. Review and create the
           shipment.
         </p>
@@ -290,12 +290,12 @@ function ShipmentsInner() {
             <button
               key={s.id}
               onClick={async () => setSelected(await api.getShipment(s.id))}
-              className={`card w-full text-left transition ${selected?.id === s.id ? "border-teal-400 ring-2 ring-teal-100" : "hover:border-slate-300"}`}
+              className={`card w-full text-left transition ${selected?.id === s.id ? "border-blue-400 ring-2 ring-blue-100" : "hover:border-slate-300"}`}
             >
               <div className="font-semibold text-slate-900">
                 {s.year} {s.make} {s.model}
               </div>
-              <div className="font-mono text-sm font-semibold text-teal-700">{s.tracking_code}</div>
+              <div className="font-mono text-sm font-semibold text-blue-700">{s.tracking_code}</div>
               <div className="text-sm text-slate-500">{s.current_milestone}</div>
             </button>
           ))}
@@ -304,7 +304,7 @@ function ShipmentsInner() {
         {selected && (
           <div className="card space-y-4">
             <h2 className="text-xl font-semibold text-slate-900">Shipment detail</h2>
-            <p className="font-mono font-semibold text-teal-700">{selected.tracking_code}</p>
+            <p className="font-mono font-semibold text-blue-700">{selected.tracking_code}</p>
             <div className="flex flex-wrap gap-2">
               {MILESTONES.map((m) => (
                 <button key={m} className="btn-secondary text-xs" onClick={() => bumpMilestone(m)}>
@@ -338,7 +338,7 @@ function ShipmentsInner() {
             {selected.completeness && (
               <div className="surface-inset p-3 text-sm">
                 <p>Missing: {selected.completeness.missing.join(", ") || "none"}</p>
-                <p className={selected.completeness.is_ready_for_customs ? "text-teal-700" : "text-amber-700"}>
+                <p className={selected.completeness.is_ready_for_customs ? "text-blue-700" : "text-amber-700"}>
                   {selected.completeness.is_ready_for_customs ? "Customs-ready" : "Not ready"}
                 </p>
               </div>

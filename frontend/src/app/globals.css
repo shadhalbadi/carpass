@@ -6,28 +6,27 @@
 
 :root {
   color-scheme: light;
-  --bg: #f4f6f8;
+  --bg: #f7f3ec;
   --bg-elevated: #ffffff;
-  --ink: #0f172a;
-  --ink-muted: #64748b;
-  --ink-faint: #94a3b8;
-  --line: #e2e8f0;
-  --line-strong: #cbd5e1;
-  --accent: #0d9488;
-  --accent-strong: #0f766e;
-  --accent-soft: #ccfbf1;
-  --danger: #e11d48;
-  --warn: #d97706;
-  --radius: 14px;
-  --shadow: 0 1px 2px rgb(15 23 42 / 4%), 0 8px 24px rgb(15 23 42 / 4%);
+  --ink: #191919;
+  --ink-muted: #6b6b6b;
+  --ink-faint: #9a9a9a;
+  --line: #eae4d8;
+  --line-strong: #ddd6c8;
+  --accent: #2b5fe3;
+  --accent-strong: #1f4dc7;
+  --accent-soft: #e8eefc;
+  --success: #2e7d4f;
+  --success-soft: #e4f3ea;
+  --danger: #d92d20;
+  --warn: #b7791f;
+  --radius: 16px;
+  --shadow: 0 1px 2px rgb(25 25 25 / 3%), 0 10px 30px rgb(25 25 25 / 5%);
 }
 
 body {
   font-family: Manrope, "IBM Plex Sans Arabic", system-ui, sans-serif;
-  background:
-    radial-gradient(1200px 600px at 10% -10%, #e6fffa 0%, transparent 55%),
-    radial-gradient(900px 500px at 100% 0%, #eff6ff 0%, transparent 50%),
-    var(--bg);
+  background: var(--bg);
   color: var(--ink);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
@@ -37,12 +36,19 @@ body {
   font-family: "IBM Plex Sans Arabic", Manrope, system-ui, sans-serif;
 }
 
+.eyebrow {
+  @apply text-xs font-bold uppercase tracking-[0.18em];
+  color: var(--accent);
+}
+
 .page-title {
-  @apply text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl;
+  @apply text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl;
+  color: var(--ink);
 }
 
 .page-sub {
-  @apply mt-1.5 max-w-2xl text-sm leading-relaxed text-slate-500 sm:text-base;
+  @apply mt-2.5 max-w-2xl text-sm leading-relaxed sm:text-base;
+  color: var(--ink-muted);
 }
 
 .card {
@@ -54,9 +60,10 @@ body {
 }
 
 .btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50;
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50;
   background: var(--accent);
   color: #fff;
+  box-shadow: 0 0 0 4px rgb(43 95 227 / 12%);
 }
 
 .btn:hover:not(:disabled) {
@@ -64,33 +71,54 @@ body {
 }
 
 .btn-secondary {
-  @apply inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition disabled:opacity-50;
+  @apply inline-flex items-center justify-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold transition disabled:opacity-50;
   border-color: var(--line-strong);
   background: #fff;
   color: var(--ink);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: #f8fafc;
-  border-color: #94a3b8;
+  background: #faf8f4;
+  border-color: var(--ink-faint);
+}
+
+.btn-dark {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-white transition;
+  background: #191919;
+}
+
+.btn-dark:hover {
+  background: #333;
 }
 
 .btn-ghost {
-  @apply inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900;
+  @apply inline-flex items-center justify-center rounded-full px-3 py-2 text-sm font-medium transition;
+  color: var(--ink-muted);
+}
+
+.btn-ghost:hover {
+  background: rgb(25 25 25 / 5%);
+  color: var(--ink);
 }
 
 .input {
-  @apply w-full rounded-xl border bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 disabled:bg-slate-50 disabled:text-slate-400;
+  @apply w-full rounded-xl border bg-white px-3.5 py-2.5 text-sm outline-none transition placeholder:text-neutral-400 disabled:text-neutral-400;
   border-color: var(--line-strong);
+  color: var(--ink);
+}
+
+.input:disabled {
+  background: #faf8f4;
 }
 
 .input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgb(13 148 136 / 15%);
+  box-shadow: 0 0 0 3px rgb(43 95 227 / 15%);
 }
 
 .label {
-  @apply mb-1.5 block text-sm font-medium text-slate-600;
+  @apply mb-1.5 block text-sm font-medium;
+  color: var(--ink-muted);
 }
 
 .badge {
@@ -98,7 +126,9 @@ body {
 }
 
 .badge-muted {
-  @apply badge bg-slate-100 text-slate-600;
+  @apply badge;
+  background: #f1ede4;
+  color: var(--ink-muted);
 }
 
 .badge-accent {
@@ -107,12 +137,23 @@ body {
   color: var(--accent-strong);
 }
 
+.badge-success {
+  @apply badge;
+  background: var(--success-soft);
+  color: var(--success);
+}
+
 .link {
-  @apply font-medium text-teal-700 transition hover:text-teal-900;
+  @apply font-medium transition;
+  color: var(--accent);
+}
+
+.link:hover {
+  color: var(--accent-strong);
 }
 
 .muted {
-  @apply text-slate-500;
+  color: var(--ink-muted);
 }
 
 .danger-text {
@@ -124,13 +165,30 @@ body {
 }
 
 .search-spinner-lg {
-  @apply h-6 w-6 border-2 border-teal-200 border-t-teal-600;
+  @apply h-6 w-6 border-2;
+  border-color: var(--accent-soft);
+  border-top-color: var(--accent);
 }
 
 .skeleton {
-  @apply animate-pulse rounded-lg bg-slate-200;
+  @apply animate-pulse rounded-lg;
+  background: #ece7dc;
 }
 
 .surface-inset {
-  @apply rounded-xl border border-slate-200 bg-slate-50;
+  @apply rounded-xl border;
+  border-color: var(--line);
+  background: #faf8f3;
+}
+
+/* Diagonal-stripe placeholder for vehicle photos, as in the design mock. */
+.photo-placeholder {
+  background:
+    repeating-linear-gradient(
+      45deg,
+      #f1ece2 0px,
+      #f1ece2 14px,
+      #ece6da 14px,
+      #ece6da 28px
+    );
 }

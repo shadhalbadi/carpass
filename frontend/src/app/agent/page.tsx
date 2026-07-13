@@ -51,7 +51,7 @@ export default function AgentPage() {
                 <div className="font-semibold text-slate-900">
                   {s.year} {s.make} {s.model}
                 </div>
-                <div className="font-mono text-sm font-semibold text-teal-700">{s.tracking_code}</div>
+                <div className="font-mono text-sm font-semibold text-blue-700">{s.tracking_code}</div>
                 <div className="text-sm text-slate-500">Current: {s.current_milestone}</div>
               </div>
               <a className="link text-sm" href={`/track?code=${s.tracking_code}`}>

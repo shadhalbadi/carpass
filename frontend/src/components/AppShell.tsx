@@ -15,7 +15,7 @@ const nav = [
   { href: "/admin", label: "Admin", labelAr: "إدارة" },
 ];
 
-/** Minimal geometric mark — no letters. */
+/** Blue rounded-square mark with an upward arc, per the design. */
 function LogoMark({ className = "" }: { className?: string }) {
   return (
     <svg
@@ -25,21 +25,13 @@ function LogoMark({ className = "" }: { className?: string }) {
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden
     >
-      <rect width="40" height="40" rx="12" fill="#0d9488" />
+      <rect width="40" height="40" rx="13" fill="#2b5fe3" />
       <path
-        d="M10 22.5c4.5-8 15.5-8 20 0"
+        d="M12 24c4-7 12-7 16 0"
         stroke="white"
-        strokeWidth="2.4"
+        strokeWidth="3"
         strokeLinecap="round"
       />
-      <path
-        d="M13 17.5c3.2-4.8 10.8-4.8 14 0"
-        stroke="white"
-        strokeWidth="2.4"
-        strokeLinecap="round"
-        opacity="0.55"
-      />
-      <circle cx="20" cy="25.5" r="2.2" fill="white" />
     </svg>
   );
 }
@@ -73,13 +65,13 @@ export function AppShell({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen text-slate-900">
-      <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/85 backdrop-blur-md">
+    <div className="min-h-screen">
+      <header className="sticky top-0 z-40 border-b border-[color:var(--line)] bg-[color:var(--bg)]/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-          <Link href="/" className="flex items-center gap-2.5 shrink-0">
+          <Link href="/" className="flex shrink-0 items-center gap-2.5">
             <LogoMark className="h-9 w-9" />
-            <span className="text-lg font-bold tracking-tight text-slate-900">
-              CarPass <span className="font-semibold text-teal-700">Oman</span>
+            <span className="text-lg font-extrabold tracking-tight text-neutral-900">
+              CarPass <span className="font-semibold text-neutral-400">Oman</span>
             </span>
           </Link>
 
@@ -90,10 +82,10 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
+                  className={`rounded-full px-3.5 py-2 text-sm font-medium transition ${
                     active
-                      ? "bg-teal-50 text-teal-800"
-                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                      ? "bg-[color:var(--accent-soft)] font-semibold text-[color:var(--accent)]"
+                      : "text-neutral-500 hover:bg-black/5 hover:text-neutral-900"
                   }`}
                 >
                   {lang === "ar" ? item.labelAr : item.label}
@@ -106,27 +98,30 @@ export function AppShell({ children }: { children: ReactNode }) {
             <button
               type="button"
               onClick={() => setLang(lang === "en" ? "ar" : "en")}
-              className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+              className="rounded-full border border-[color:var(--line-strong)] bg-white px-3 py-1.5 text-xs font-semibold text-neutral-600 hover:bg-neutral-50"
             >
               {lang === "en" ? "عربي" : "EN"}
             </button>
             {user ? (
               <>
-                <span className="hidden max-w-[10rem] truncate text-sm text-slate-500 sm:inline">
+                <span className="hidden max-w-[10rem] truncate text-sm text-neutral-500 sm:inline">
                   {user.full_name || user.email}
                 </span>
-                <button type="button" onClick={logout} className="btn-secondary !py-1.5 !text-xs">
+                <button type="button" onClick={logout} className="btn-dark !py-1.5 !text-xs">
                   Logout
                 </button>
               </>
             ) : (
-              <Link href="/login" className="btn !py-1.5 !text-xs">
-                Login
+              <Link href="/login" className="btn-dark !py-1.5 !text-xs">
+                <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white/20 text-[9px] font-bold">
+                  A
+                </span>
+                Sign in
               </Link>
             )}
             <button
               type="button"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 lg:hidden"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--line-strong)] lg:hidden"
               aria-label="Menu"
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((o) => !o)}
@@ -148,7 +143,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
 
         {menuOpen && (
-          <nav className="border-t border-slate-200 bg-white px-4 py-3 lg:hidden" aria-label="Mobile">
+          <nav className="border-t border-[color:var(--line)] bg-[color:var(--bg)] px-4 py-3 lg:hidden" aria-label="Mobile">
             <div className="mx-auto grid max-w-6xl gap-1 sm:grid-cols-2">
               {nav.map((item) => {
                 const active = pathname === item.href;
@@ -156,8 +151,10 @@ export function AppShell({ children }: { children: ReactNode }) {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`rounded-lg px-3 py-2.5 text-sm font-medium ${
-                      active ? "bg-teal-50 text-teal-800" : "text-slate-700 hover:bg-slate-50"
+                    className={`rounded-xl px-3 py-2.5 text-sm font-medium ${
+                      active
+                        ? "bg-[color:var(--accent-soft)] text-[color:var(--accent)]"
+                        : "text-neutral-700 hover:bg-black/5"
                     }`}
                   >
                     {lang === "ar" ? item.labelAr : item.label}
@@ -171,8 +168,20 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">{children}</main>
 
-      <footer className="border-t border-slate-200 bg-white/70 py-8 text-center text-sm text-slate-500">
-        CarPass Oman — true landed cost &amp; import tracking
+      <footer className="border-t border-[color:var(--line)] bg-white/60">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-6 text-sm sm:px-6">
+          <div className="flex items-center gap-2.5">
+            <LogoMark className="h-7 w-7" />
+            <span className="font-bold text-neutral-900">
+              CarPass Oman{" "}
+              <span className="font-normal text-neutral-500">— true landed cost &amp; import tracking</span>
+            </span>
+          </div>
+          <div className="flex items-center gap-5 text-neutral-500">
+            <span className="font-medium text-neutral-700">Help</span>
+            <span>© 2026 CarPass Oman</span>
+          </div>
+        </div>
       </footer>
     </div>
   );

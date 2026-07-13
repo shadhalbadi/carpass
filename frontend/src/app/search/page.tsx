@@ -38,6 +38,8 @@ function queryKey(q: QueryKey): string {
   });
 }
 
+const STORAGE_KEY = "carpass_search_state";
+
 export default function SearchPage() {
   const [make, setMake] = useState("");
   const [model, setModel] = useState("");
@@ -48,11 +50,35 @@ export default function SearchPage() {
   const [loading, setLoading] = useState(false);
   const [loadingHint, setLoadingHint] = useState("");
   const [error, setError] = useState("");
+  const [restored, setRestored] = useState(false);
   const appliedQuery = useRef<string | null>(null);
   const clearTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const modelOptions = useMemo(() => modelsForMake(make), [make]);
   const currentFields: QueryKey = { make, model, yearMin, maxLanded, source };
+
+  // Restore last search (fields + results) so results survive navigating
+  // to a listing's detail page and back.
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const saved = JSON.parse(raw);
+        setMake(saved.make || "");
+        setModel(saved.model || "");
+        setYearMin(saved.yearMin || "");
+        setMaxLanded(saved.maxLanded || "");
+        setSource(saved.source || "");
+        if (saved.data) {
+          setData(saved.data);
+          appliedQuery.current = saved.appliedQuery || null;
+        }
+      }
+    } catch {
+      /* corrupt/absent state — start fresh */
+    }
+    setRestored(true);
+  }, []);
 
   const LOADING_HINTS = [
     "Contacting marketplaces…",
@@ -77,7 +103,22 @@ export default function SearchPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
 
+  // Keep the saved state in sync so it's always up to date when we navigate away.
   useEffect(() => {
+    if (!restored) return;
+    try {
+      sessionStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ make, model, yearMin, maxLanded, source, data, appliedQuery: appliedQuery.current }),
+      );
+    } catch {
+      /* storage full/unavailable */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [restored, make, model, yearMin, maxLanded, source, data]);
+
+  useEffect(() => {
+    if (!restored) return;
     if (!data || !appliedQuery.current) return;
     if (queryKey(currentFields) === appliedQuery.current) return;
     if (clearTimer.current) clearTimeout(clearTimer.current);
@@ -92,7 +133,7 @@ export default function SearchPage() {
       if (clearTimer.current) clearTimeout(clearTimer.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [make, model, yearMin, maxLanded, source]);
+  }, [restored, make, model, yearMin, maxLanded, source]);
 
   const fieldsChanged =
     data != null && appliedQuery.current != null && queryKey(currentFields) !== appliedQuery.current;
@@ -191,10 +232,10 @@ export default function SearchPage() {
       </form>
 
       {loading && (
-        <div className="card flex items-start gap-4 border-teal-200 bg-teal-50/60" role="status" aria-live="polite">
+        <div className="card flex items-start gap-4 border-blue-200 bg-blue-50/60" role="status" aria-live="polite">
           <span className="search-spinner search-spinner-lg mt-0.5 shrink-0" aria-hidden />
           <div className="min-w-0 space-y-1">
-            <p className="font-semibold text-teal-900">Searching marketplaces</p>
+            <p className="font-semibold text-blue-900">Searching marketplaces</p>
             <p className="text-sm text-slate-700">{loadingHint}</p>
             <p className="text-xs text-slate-500">This can take up to a minute.</p>
             {data?.items?.length > 0 && (
@@ -207,7 +248,7 @@ export default function SearchPage() {
       {error && <p className="danger-text text-sm">{error}</p>}
 
       {data?.message && data.items?.length > 0 && !loading && (
-        <p className="text-sm font-medium text-teal-700">{data.message}</p>
+        <p className="text-sm font-medium text-blue-700">{data.message}</p>
       )}
 
       {data?.errors && Object.keys(data.errors).length > 0 && !loading && (
@@ -243,7 +284,7 @@ export default function SearchPage() {
               </h2>
               <span className="badge-muted shrink-0">{item.source}</span>
             </div>
-            <p className="text-xl font-bold text-teal-700">
+            <p className="text-xl font-bold text-blue-700">
               {item.landed_cost_omr != null ? `${formatOmr(item.landed_cost_omr)} OMR` : "—"}
               {item.landed_cost_omr != null && <span className="ml-1 text-sm font-medium text-slate-500">landed</span>}
             </p>
@@ -255,7 +296,7 @@ export default function SearchPage() {
               <Link href={`/listings/${item.id}`} className="link text-sm">
                 View details
               </Link>
-              <Link href={importHref(item)} className="text-sm font-semibold text-teal-700 hover:text-teal-900">
+              <Link href={importHref(item)} className="text-sm font-semibold text-blue-700 hover:text-blue-900">
                 Import this car
               </Link>
               {item.source_url && (

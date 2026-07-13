@@ -39,7 +39,7 @@ export default function ListingDetailPage() {
 
   return (
     <div className="space-y-6">
-      <Link href="/search" className="text-sm font-medium text-slate-500 hover:text-teal-700">
+      <Link href="/search" className="text-sm font-medium text-slate-500 hover:text-blue-700">
         ← Back to search
       </Link>
 
@@ -60,7 +60,7 @@ export default function ListingDetailPage() {
             </h1>
             <span className="badge-muted shrink-0">{item.source}</span>
           </div>
-          <p className="text-3xl font-bold text-teal-700">
+          <p className="text-3xl font-bold text-blue-700">
             {item.landed_cost_omr != null ? `${formatOmr(item.landed_cost_omr)} OMR` : "—"}
             {item.landed_cost_omr != null && (
               <span className="ml-2 text-base font-medium text-slate-500">landed</span>
@@ -107,7 +107,7 @@ export default function ListingDetailPage() {
           </div>
           {item.source_url && (
             <p className="break-all text-xs text-slate-500">
-              Will use: <span className="text-teal-700">{item.source_url}</span>
+              Will use: <span className="text-blue-700">{item.source_url}</span>
             </p>
           )}
         </div>

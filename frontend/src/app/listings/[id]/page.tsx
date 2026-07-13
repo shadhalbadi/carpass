@@ -6,6 +6,18 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { formatMoney, formatOmr } from "@/lib/format";
 
+function importHref(item: any): string {
+  const q = new URLSearchParams();
+  if (item.id) q.set("listing_id", String(item.id));
+  if (item.make) q.set("make", item.make);
+  if (item.model) q.set("model", item.model);
+  if (item.year) q.set("year", String(item.year));
+  if (item.vin) q.set("vin", item.vin);
+  const origin = item.location || item.country;
+  if (origin) q.set("origin_port", origin);
+  return `/shipments?${q.toString()}`;
+}
+
 export default function ListingDetailPage() {
   const params = useParams();
   const id = Number(params.id);
@@ -83,6 +95,9 @@ export default function ListingDetailPage() {
           <div className="flex flex-wrap gap-3 pt-1">
             <Link href={`/?listing_id=${item.id}`} className="btn">
               Recalculate landed cost
+            </Link>
+            <Link href={importHref(item)} className="btn-secondary">
+              Import this car
             </Link>
             {item.source_url && (
               <a href={item.source_url} target="_blank" rel="noreferrer" className="btn-secondary">

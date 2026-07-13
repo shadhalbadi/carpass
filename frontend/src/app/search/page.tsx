@@ -255,6 +255,9 @@ export default function SearchPage() {
               <Link href={`/listings/${item.id}`} className="link text-sm">
                 View details
               </Link>
+              <Link href={importHref(item)} className="text-sm font-semibold text-teal-700 hover:text-teal-900">
+                Import this car
+              </Link>
               {item.source_url && (
                 <a href={item.source_url} target="_blank" rel="noreferrer" className="text-sm font-medium text-slate-500 hover:text-slate-800">
                   Open listing
@@ -277,6 +280,18 @@ export default function SearchPage() {
       )}
     </div>
   );
+}
+
+function importHref(item: any): string {
+  const q = new URLSearchParams();
+  if (item.id) q.set("listing_id", String(item.id));
+  if (item.make) q.set("make", item.make);
+  if (item.model) q.set("model", item.model);
+  if (item.year) q.set("year", String(item.year));
+  if (item.vin) q.set("vin", item.vin);
+  const origin = item.location || item.country;
+  if (origin) q.set("origin_port", origin);
+  return `/shipments?${q.toString()}`;
 }
 
 function formatNumberSafe(n: number | undefined) {

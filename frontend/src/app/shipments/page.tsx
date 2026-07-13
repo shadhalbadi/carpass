@@ -1,9 +1,11 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, Suspense, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Combobox } from "@/components/Combobox";
 import { api } from "@/lib/api";
 import { CAR_MAKES, modelsForMake, yearOptions } from "@/lib/cars";
+import { formatMoney } from "@/lib/format";
 
 const DOC_TYPES = [
   "bill_of_lading",
@@ -18,7 +20,8 @@ const DOC_TYPES = [
 const MILESTONES = ["purchased", "export_yard", "on_vessel", "arrived_port", "customs", "released", "delivered"];
 const YEARS = yearOptions();
 
-export default function ShipmentsPage() {
+function ShipmentsInner() {
+  const searchParams = useSearchParams();
   const [shipments, setShipments] = useState<any[]>([]);
   const [selected, setSelected] = useState<any>(null);
   const [error, setError] = useState("");
@@ -33,8 +36,86 @@ export default function ShipmentsPage() {
   });
   const [docType, setDocType] = useState("bill_of_lading");
   const [verifyResult, setVerifyResult] = useState<any>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [pickerCars, setPickerCars] = useState<any[]>([]);
+  const [pickerLoading, setPickerLoading] = useState(false);
+  const [pickerError, setPickerError] = useState("");
+  const [pickedCar, setPickedCar] = useState<any>(null);
 
   const modelOptions = useMemo(() => modelsForMake(form.make), [form.make]);
+
+  // Prefill car details when arriving from Search / listing pages.
+  // Prefers listing_id (fetches the full record so VIN etc. come through),
+  // falls back to plain query params.
+  useEffect(() => {
+    const listingId = searchParams.get("listing_id");
+    const make = searchParams.get("make");
+    const model = searchParams.get("model");
+    const year = searchParams.get("year");
+    const vin = searchParams.get("vin");
+    const origin = searchParams.get("origin_port");
+    if (!listingId && !make && !model && !year && !vin) return;
+
+    const applyParams = () =>
+      setForm((f) => ({
+        ...f,
+        make: make || f.make,
+        model: model || f.model,
+        year: year || f.year,
+        vin: vin || "",
+        origin_port: origin || f.origin_port,
+      }));
+
+    if (listingId) {
+      api
+        .getListing(Number(listingId))
+        .then((item) => {
+          setForm((f) => ({
+            ...f,
+            make: item.make || make || f.make,
+            model: item.model || model || f.model,
+            year: item.year ? String(item.year) : year || f.year,
+            vin: item.vin || vin || "",
+            origin_port: item.location || item.country || origin || f.origin_port,
+          }));
+          setPickedCar(item);
+        })
+        .catch(applyParams);
+    } else {
+      applyParams();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
+  async function openPicker() {
+    setPickerOpen(true);
+    if (pickerCars.length) return;
+    setPickerLoading(true);
+    setPickerError("");
+    try {
+      const res = await api.searchListings({ live: false, page: 1, page_size: 30 });
+      setPickerCars(res.items || []);
+      if (!res.items?.length) setPickerError("No saved cars yet — run a Search first, then come back.");
+    } catch (err: any) {
+      setPickerError(err.message || "Failed to load cars");
+    } finally {
+      setPickerLoading(false);
+    }
+  }
+
+  function pickCar(item: any) {
+    setForm((f) => ({
+      ...f,
+      make: item.make || "",
+      model: item.model || "",
+      year: item.year ? String(item.year) : f.year,
+      vin: item.vin || "",
+      origin_port: item.location || item.country || f.origin_port,
+    }));
+    setPickedCar(item);
+    setPickerOpen(false);
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
   async function load() {
     try {
@@ -90,11 +171,60 @@ export default function ShipmentsPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="page-title">My imports</h1>
-        <p className="page-sub">Create a shipment, upload docs, and follow milestones.</p>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="page-title">My imports</h1>
+          <p className="page-sub">Create a shipment, upload docs, and follow milestones.</p>
+        </div>
+        <button type="button" className="btn" onClick={openPicker}>
+          Choose a car to import
+        </button>
       </div>
       {error && <p className="danger-text text-sm">{error}</p>}
+
+      {pickerOpen && (
+        <section className="card space-y-4 border-teal-300 ring-2 ring-teal-100">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-semibold text-slate-900">Pick a car</h2>
+              <p className="text-sm text-slate-500">Cars from your recent searches — pick one to prefill the import form.</p>
+            </div>
+            <button type="button" className="btn-secondary !py-1.5 !text-xs" onClick={() => setPickerOpen(false)}>
+              Close
+            </button>
+          </div>
+          {pickerLoading && <p className="muted text-sm">Loading cars…</p>}
+          {pickerError && <p className="danger-text text-sm">{pickerError}</p>}
+          <div className="grid max-h-96 gap-3 overflow-y-auto sm:grid-cols-2 xl:grid-cols-3">
+            {pickerCars.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => pickCar(item)}
+                className="card w-full text-left transition hover:border-teal-400 hover:ring-2 hover:ring-teal-100"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <span className="font-semibold text-slate-900">
+                    {item.year || ""} {item.make} {item.model}
+                  </span>
+                  <span className="badge-muted shrink-0">{item.source}</span>
+                </div>
+                <div className="mt-1 text-sm text-slate-500">
+                  {formatMoney(item.price, item.currency)} · {item.location || item.country || "—"}
+                </div>
+                {item.vin && <div className="mt-1 font-mono text-xs text-slate-400">VIN {item.vin}</div>}
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {pickedCar && (
+        <p className="text-sm font-medium text-teal-700">
+          Importing: {pickedCar.year} {pickedCar.make} {pickedCar.model} — details filled in below. Review and create the
+          shipment.
+        </p>
+      )}
 
       <form onSubmit={createShipment} className="card grid gap-4 md:grid-cols-3">
         <div>
@@ -225,5 +355,13 @@ export default function ShipmentsPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function ShipmentsPage() {
+  return (
+    <Suspense fallback={<div className="muted">Loading imports…</div>}>
+      <ShipmentsInner />
+    </Suspense>
   );
 }
